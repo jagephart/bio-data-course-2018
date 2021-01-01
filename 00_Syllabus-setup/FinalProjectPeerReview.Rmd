@@ -1,5 +1,5 @@
 ---
-title: "BIO 410/510 Peer Review Format"
+title: "Final Project Peer Review"
 output:
   pdf_document: default
   html_document: default
