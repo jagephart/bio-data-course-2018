@@ -1,5 +1,5 @@
 ---
-title: 'BIO 410/510 Final Project: Topic Identification'
+title: 'Final Project: Topic Identification'
 output:
   pdf_document: default
   html_document: default
