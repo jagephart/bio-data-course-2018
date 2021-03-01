@@ -1,0 +1,126 @@
+---
+title: "Problem Set 2"
+output: pdf_document
+---
+### Name: 
+
+About this format: This problem set is saved as an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. You can click "knit" at the top to create a pdf (which is what you will turn in). You can write text (just like in Word) in this document to answer the questions. You can then use the "code chunks" to write your R code. When you execute code within the notebook, the results appear beneath the code. To add a new R chunk click the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I* (you shouldn't need to to this since this document is set up with code chunks for each question, but just in case!).
+
+**To submit: Please upload the final .pdf file on Canvas**
+
+
+### I. CO2 Trends
+First read in the data and get it ready to use
+You can find the data and read more about it here: https://climate.nasa.gov/vital-signs/carbon-dioxide/
+In particular, the metadata is at the top of the txt file if you click on the Download Data button.
+
+To get you started here's the code to read in the data and give it better column names (you should be able to just run this - no need to modify it):
+
+```{r, echo=FALSE}
+# library data.table allows you to read files directly from the internet
+# install.packages("data.table")
+library(data.table)
+library(tidyverse)
+
+# Let's skip down to the data, which starts at line 72
+CO2data <- fread('ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_mm_mlo.txt', skip = 71)
+
+# give descriptive but short names
+names(CO2data) <- c("year", "month", "decimalDate", "meanCO2", "deseasonalizedCO2", "numberDays",
+                    "stdDays", "uncMeanCO2")
+
+```
+
+
+1. Read about the data   
+Why are there three different columns for CO2? Where do the data come from? What does numberDays refer to? What does -9.99 in the stdev column mean? [1 point]
+
+
+2. Visualize the data: How do atmospheric CO2 concentrations change over the time series? 
+
+a. Describe your process: What category of graph will you use? Does the underlying data differ if you use the interpolated or trend columns? [1 point]
+
+
+
+b. Graph it, with custom axis labels, a title, and change the color and theme:  [3 points]
+```{r}
+
+
+```
+
+
+3. Visualize the data: Which months are the CO2 values at the maximum? Minimum? It may help to plot it below to answer this. Does this make sense (i.e., what might explain this)? [1 point]
+
+
+a. Describe your process: What category of graph will you use?  [1 points]
+
+
+
+b. Graph it, with custom axis labels, a title, and a new theme (Note- it may be help to change month to a factor using the as.factor() function):  [3 points]
+```{r}
+
+
+```
+
+
+### II. Temperature trends
+First we'll read in the data and get it ready to use
+You can find the data and read about it here: https://climate.nasa.gov/vital-signs/global-temperature/
+
+```{r}
+tempdata <- fread('http://climate.nasa.gov/system/internal_resources/details/original/647_Global_Temperature_Data_File.txt')
+
+```
+
+
+1. Read about the data
+What information is in each of the three columns? Where do the data come from? Using the names() function to give tempdata descriptive column headings [1 points]
+
+```{r}
+
+
+```
+
+2. Visualize the data
+a. Recreate the graph on the website using all three columns (in terms of basic properties - no need to try to get the theme exactly the same). [2.5 points]
+```{r}
+
+
+```
+
+
+b. Recreate the graph on the website using two columns and a statistical transformation (Note - it won't look exactly the same due to differences in the default degree of smoothing) [2.5 points]
+```{r}
+
+
+```
+
+
+### III. Ice sheets
+Have a look at the following data, and read it into R 
+Either use fread() in library(data.table) to read it from the web, or read.csv() 
+
+Data description: http://climate.nasa.gov/vital-signs/land-ice/
+Raw data file: http://climate.nasa.gov/system/internal_resources/details/original/499_GRN_ANT_mass_changes.csv
+```{r}
+# Run the following to read the .csv from the web and rename columns
+icedat0 <- fread('http://climate.nasa.gov/system/internal_resources/details/original/499_GRN_ANT_mass_changes.csv')
+
+icedat <- icedat0[-c(1:10),]
+names(icedat) = c("year_decimal", "Greenlandmass_Gt", "Antarcticamass_Gt")
+icedat$year_decimal <- as.numeric(icedat$year_decimal)
+icedat$Greenlandmass_Gt <- as.numeric(icedat$Greenlandmass_Gt)
+icedat$Antarcticamass_Gt <- as.numeric(icedat$Antarcticamass_Gt)
+```
+
+
+1. Describe the data set: What are the columns and units? Where do the numbers come from?  [1 point]
+
+
+
+2. Plot a time series of the with one line for the Antarctic mass and one for the Greenland mass, with a separate line color for each. Describe the trends you observe. [3 points]
+
+```{r}
+
+
+```

@@ -1,0 +1,201 @@
+---
+title: "R Markdown Introduction"
+author: "Jessica Gephart"
+date: "2/21/2021"
+output: html_document
+---
+
+## Basic set up
+
+Go ahead and create your own new R Markdown file. Title it "R Markdown Exercise", add your name as the author and select "pdf" as the output. Save this file to your project folder (or a sub-folder, but then you will want to save data to that same folder).
+
+Take a look at the file that is automatically-generated, including the YAML, the text and the code chunks. 
+
+Hit "Knit" and view the output. 
+
+We will now delete the default example text (other than the YAML) and will use this blank file for the class exercise later. 
+
+
+## YAML
+
+At the top of your document, you will find the "YAML". This will be pre-populated when you set up your Markdown file, but you can also change it directly. 
+
+TASK: In your "R Markdown Exercise" file, change the title and the output to html (with html_document). Knit the file to view the change.
+
+There are many other setting options to include in the YAML, which vary by the output type. Now that we have an html output, we can change the output settings. To do this, add a line break to move "html_document" to the line below "output:". Add a colon and another line break. Now, you can add options on each line, including:
+
+* "toc: true" to add a table of contents
+* "toc_depth: n" to set how many levels in the table of contents should go
+* "toc_float: true" to keep the table of contents at the left and visible as you scroll
+* "number_sections: true" to add section numbers to your headers
+* "theme: [theme name]" to change the theme. You can select cerulean, journal, flatly, darkly, readable, spacelab, united, cosmo, lumen, paper, sandstone, simplex, and yeti from the [Bootswatch](https://bootswatch.com/3/) library or create your own custom theme with css. Note: theme works for html outputs, but not pdf outputs
+* fig_width and fig_height can be used to control the default figure width and height (7x5 is used by default). You can also set figure sizes in individual code chunks. 
+
+TASK: In your "R Markdown Exercise" file, try changing the theme and viewing the new output. 
+
+A good resource for additional formatting options is [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/).
+
+## Formatting text
+
+R Markdown uses plain text formatting in the document. This means that you can only type text, rather than clicking on formatting options for text (e.g., the way you bold text in Word). This has the benefit of preserving the file across different operating systems, but does mean that you have to learn some conventions for formatting. There are different formatting conventions for plain text available, but we will use those from Markdown (which is why this is called R Markdown). 
+
+You have already seen some of these above and in your homework, but we will walk through them now. 
+
+### Headings
+
+You can create headings at different levels by adding additional hashtags. For example: 
+
+# Heading level 1
+## Heading level 2
+### Heading level 3
+
+And so on. 
+
+You should think of these as nested sections and if you indicate in your YAML for the document to include section numbering, it will use the nested structure to number your sections. 
+
+TASK: In your R Markdown Exercise file, create an outline with the following sections: Section 1, Section 1.1, Section 1.2, Section 2, Section 2.1, Section 2.1.1, Section 2.1.2, Section 2.2, Section 2.2.1, Section 2.2.2, Section 2.2.3, Section 3. How many hashtags do you need for each to create the correct structure? Knit the document. 
+
+TASK: Now, add "toc: true" and "number_sections: true" to your options and knit the document to see how the document changes. 
+
+The numbering we used for the text should match, but is now redundant. 
+
+### Text styling
+
+There are a few useful symbols you can add to format your text: 
+
+* You can change text to italics - *text* or _text_
+* You can change text to bold - **text** or __text__
+* You can add a superscript - text^superscript^
+* You can add a subscript - text~subscript~
+* You can change to strikethrough text - ~~text~~
+
+You can also add hyperlinks by putting the text to hyperlink in square brackets, with the weblink immediately following in parentheses. 
+
+TASK: In your R Markdown Exercise file, write some short text that includes each of the above styling elements. Knit the document to make sure it produces what you expected. 
+
+### Lists and tables
+
+You may have already noticed that I have used asterisks above for lists of points. You can create unordered lists (bullet points) with asterisks and can include subpoints with a plus symbol preceded by two tabs. You can create an ordered list by numbering and can still include subpoints with a plus symbol preceded by two tabs. Be sure to include a blank line between your text and the start of your list:
+
+* This
+* is
+* an 
+* unordered
+* list
+
+1. This
+2. is
+3. an 
+4. ordered
+5. list
+    + with
+    + subpoints
+
+You can also build tables with dashes and vertical bars, as below. This can make sense for building simple tables with text. However, you will not want to use this method to manually display a table of results from an analysis (more on that later).
+
+Table Header | Second Header
+------------- | -------------
+Table Cell | Cell 2
+Cell 3 | Cell 4 
+
+TASK: In your R Markdown Exercise file, list your classes and include subpoints with the tasks for this week. Then, create a table with your classes and the number of credits for each class. 
+
+### Images
+
+We will produce figures directly within R Markdown using code chunks (more on this below), but sometimes we may want to include images other than plots. In this case, we can embed a figure within an R Markdown document with an exclamation point followed by the image name in square brackets and the image file path (or web link) in parentheses. 
+
+![Fig 1. LTER logo](https://lternet.edu/wp-content/uploads/2018/02/LTER-network-horizontal.png)
+
+If you link to this file on your computer, you would include the file path (either the full file path or the file path relative to your project directory) in the parentheses instead. 
+
+TASK: Find an image online. Open the image in its own tab and copy the link. Embed this image in your R Markdown Exercise file. 
+
+### Equations
+
+You can add properly formatted equations into your R Markdown file two ways: 1) for in line equations, surround the equation with dollar signs, and 2) for equations on their own line, surround the equation with two dollar signs on each side. 
+
+Equations within Markdown files can use LaTex syntax. We can't cover all of the symbols, but [here](https://rpruim.github.io/s341/S19/from-class/MathinRmd.html) is a useful guide. Some common mathematical syntax includes:
+
+* Standard mathematical operators: $y = mx + b$
+* Fractions: $\frac{a}{b}$
+* Superscripts: $x^{n}$
+* Subscripts: $x_{n}$
+* Summation: $\sum_{x = a}^{b} f(x)$
+* Greek letters: $\beta B$
+
+TASK: Add the equation for the area of a circle to your R Markdown Exercise file.
+
+## Code 
+
+The big advantage of R Markdown is being able to integrate code with plain text. Code can be integrated in two ways: 1) within plain text, so you can print outputs or perform basic computations, and; 2) in code chunks, which are longer blocks of code, which may or may not be printed as part of your output. 
+
+### Inline code
+
+To integrate code within a line, you can type your plain text as usual, and then start the code portion with a tick mark followed by "r" and end your code with another tick mark. For example, you could say: the sum of 2 and 3 is `r 2+3`. When you knit this, you will see that it prints the number 5 and not the code. You may also want to format the number to look nicer in text than the R default output. For this, the function round() may be useful. For example, compare `r 2/3` compared to `r round(2/3, 2)`.
+
+### Code chunks
+
+Including R code directly in your text is useful for reporting numbers from your analysis that will update each time you update your analysis. For more involved, multi-line code, you will need to use a code chunk. A code chunk starts with three ticks, followed by an open curly bracket and an r, then any options arguments and a closed curly bracket. You can type all of your code and then end the chunk with another three ticks. Alternatively, you can use the "Insert" button at the top to create a blank chunk or the keyboard shortcut: `Ctrl` + `Alt` + `I` (`Cmd` + `Option` + `I` on macOS).
+
+Note: File paths will be relative to where your R Markdown file is saved. 
+
+```{r load_clean_data, echo=FALSE, message=FALSE}
+library(tidyverse)
+df <- read.csv("FAOSTAT_landcover_modis.csv")
+
+# This code is filtering the data and selecting the relevant columns
+# We will learn about this in an upcoming lecture, so for now, just run it
+
+# Create a data frame with a time series for the US
+US_ts <- df %>%
+  filter(Area == "United States of America") %>%
+  select(Year, Item, Unit, Value) %>%
+  filter(!is.na(Value))
+
+# Create a data frame with select countries for 2018
+df_2018 <- df %>% 
+  filter(Area %in% c("United States of America", "Brazil", "India", "China", "Indonesia")) %>%
+  filter(Year == 2018) %>%
+  select(Area, Year, Item, Unit, Value) %>%
+  filter(!is.na(Value))
+
+```
+
+We can knit this and see the output. You may notice that we probably don't actually want this to be included in the final document. 
+Question: What should we do? 
+
+Now, moving on to adding in more interesting outputs. Let's add another code chunk and make some plots!
+
+TASK: Create a code chunk and your own plot using one of the data frames above. Knit the document to see what it produces. 
+
+```{r, echo=FALSE, fig.width=4, fig.height=3, fig.cap= "US land use time series"}
+ggplot(data = US_ts, aes(x = Year, y = Value, fill = Item)) +
+  geom_area() +
+  labs(x = "", y = "Area (1000 ha)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+```
+
+TASK: Now, change the figure size in the chunk header. 
+
+You can also add a caption to the figure by adding the code chunk argument `fig.cap =`.
+
+If we have many code chunks and we want them to all have the same options, we can set code options globally using `knitr::opts_chunk$set`. You can include this in the first code chunk and it may read something like `knitr::opts_chunk$set(echo = FALSE)` (or what ever settings you would like applied globally).
+
+## Tables
+
+Making tables manually is very tedious. If we want to present a summary table of an R object (such as a data frame) we can take advantage of a function called `kable()` that will format simple tables. 
+
+```{r}
+library(knitr)
+summary_table <- df %>% 
+  group_by(Item) %>% 
+  summarise(Land_area = sum(Value, na.rm = TRUE)) %>% 
+  arrange(desc(Land_area))
+kable(summary_table, col.names = c("Land type", "Total area (1000 ha)"))
+
+```
+
+You can also add a caption by adding the argument `caption =`.
+

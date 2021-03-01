@@ -1,0 +1,40 @@
+---
+title: "R Markdown Exercise - Feb 24, 2021"
+author: "Jessica Gephart"
+output: 
+  html_document:
+    theme: spacelab
+    toc: true
+    number_sections: true
+---
+
+# Section
+
+## Section
+
+![puppy](https://uptownpuppies.com/wp-content/themes/mega-theme/images/welshcorgiopennew.jpg){width=50%}
+
+## Section
+
+# Section
+```{r}
+
+```
+
+## Section
+
+### Section
+
+### Section
+
+## Section
+
+### Section
+
+### Section
+
+### Section
+
+# Section
+
+

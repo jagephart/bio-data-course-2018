@@ -1,0 +1,66 @@
+---
+title: "Problem Set 3"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+# Set universal options to echo code chunks so your code shows up in your assignment
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part 1: Load and tidy data
+
+Load the data file "FishstatJ_ISSCAAP_prod_by_continent.csv" and produce a tidy data set (name it df_tidy). Convert the column with the year data to a date format. Convert the production source data to factor data with Capture production as the first level and Aquaculture production as the second level. [5 points]
+
+```{r load_tidy_data}
+library(tidyverse)
+library(lubridate)
+library(knitr)
+
+
+```
+
+How many rows and columns does the original data frame have? How many does the tidy data frame have? [1 point]
+
+
+
+How many unique "Country" items are there (these are actually continents)? How many unique ISSCAAP groups are there? [1 point]
+
+
+
+# Part 2: Plot time series
+
+Plot select ISSCAAP group production by continent and production source over time. Include custom x-axis and y-axis label. Apply a custom theme. Move the legend to below the plots. [5 points]
+
+```{r}
+# Run the following line to produce a data frame for your figure
+df_plot1 <- df_tidy %>%
+  filter(ISSCAAP_group %in% c("Cods, hakes, haddocks", "Oysters", 
+                              "Salmons, trouts, smelts", "Shrimps, prawns",
+                              "Tilapias and other cichlids"))
+
+# Use the resulting data frame to create a facet_grid with continents on the rows and ISSCAAP group on the columns. In each cell of the facet, create a stacked line graph of production tonnes by production source. 
+
+
+# Note: You will get a warning about removing missing data (there are many NAs in your data frame)
+```
+
+This is an exploratory plot. Describe one pattern or message you might want to communicate from this. State that message and describe how you would change the figure to communicate that specific message. [3 points]
+
+
+Part 3: Summarize the total production in 2018 
+
+Use the data frame produced in the code provided to create a table with the total production by region for 2018. Include custom column names in the table and a table caption. [5 points]
+
+Hint: use "na.rm = TRUE" within sum to ignore NAs when summing
+
+```{r summary_table}
+# Run this code to filter to 2018 data for your table
+df_2018 <- df_tidy %>%
+  filter(year == 2018)
+
+# Create your summary and table here:
+
+
+```
+

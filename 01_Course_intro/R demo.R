@@ -12,7 +12,7 @@ summary(penguins)
 # Plot relationships between variables
 ggplot(penguins, aes(x = bill_length_mm, y = flipper_length_mm, colour = sex)) +
   geom_point() +
-  theme_fivethirtyeight()
+  theme_clean()
 
 # Generate many plots
 ggplot(penguins, aes(x = body_mass_g, y = flipper_length_mm, colour = sex)) +

@@ -1,0 +1,258 @@
+---
+title: "Tidy Data Part 1 Demo"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(palmerpenguins)
+```
+
+# OBJECTIVES:
+
+* To learn what tidy data means.
+* To learn how to tidy data in a way that is traceable and reproducible.
+* To this end we'll be using the tidyr and dplyr packages (both loaded with tidyverse).
+
+The author of tidyr, Hadley Wickham, discusses the philosophy of tidy data in his Tidy Data paper (<http://vita.had.co.nz/papers/tidy-data.pdf>).It is really worth a read! 
+
+# What are tidy data?
+
+Tidy data are data that are easy to transform and visualize. The key idea is that variables are stored in a consistent way, with three features:
+
+1. Each variable forms a column
+2.  Each observation forms a row
+3. Each type of observational unit forms a table
+
+Meanwhile, there are five common problems associated with messy data:
+
+1. Column headers are values, not variable names
+2. Multiple variables are stored in one column
+3. Variables are stored in both rows and columns
+4. Multiple types of observational units are stored in the same table
+5. A single observational unit is stored in multiple tables
+
+# Load the data
+
+We will use a dataset of water temperature in Calispell Creek and its tributories  from eastern Washington State. These type of data are perfect for for scripted analysis because their formats remain constant but graphs frequently need to be updated to reflect new data.
+
+```{r load_data}
+# Don't forget to point to where your data is (as a relative path from where your R Markdown file is located)
+wtemp <- read.csv("CalispellCreekandTributaryTemperatures.csv") 
+
+# Check out this data
+str(wtemp)
+
+# The column names are ugly (periods are entered for spaces when read in)
+# Let's fix this:
+names(wtemp) <- c("date", "time", "calispell_temp", "smalle_temp", "winchester_temp")
+
+```
+
+Question: Is this data in tidy format? 
+
+Let's try to plot a time series for each stream. 
+
+```{r plot_untidy}
+# TASK: Plot the time series, with a different color for each stream using ggplot
+# (ignore the date/time formatting problem for now)
+
+
+```
+
+Question: What was the problem? What do we need to do?
+
+# Gather and spread functions
+
+The gather() and spread() functions pivot data longer and wider, respectively. We will first work with gather() to pivot the data longer. Let's look at the function help documentation. 
+
+Note that the gather() call takes the following arguments, in order:
+
+* The dataframe
+* The name of the key column to create in the output
+* The name of the value column to create in the output
+* The columns to gather
+
+```{r gather_data}
+# Create a new object called wtemp_gathered that is in long format
+wtemp_gathered <- gather(data = wtemp, key= site, value = temperature, 
+                         calispell_temp:winchester_temp) 
+# Check out the structure of the new dataframe
+
+```
+
+We will generally want our data in long format for analysis. There can be instances where the data is too long, such that the data isn't tidy or we want a wide format (e.g., to produce a summary table). In these cases, we can use the spread() function. 
+
+Let's take a look at the help documentation and compare to the gather() arguments.
+
+```{r spread_data}
+# Create a new object called wtemp_spread
+
+```
+
+Question: How does this compare to the original dataframe?
+
+Many training materials refer to the functions gather() and spread() and while these will work, they are being replaced by the functions pivot_longer() and pivot_wider(), respectively. These have some newer functionality and more intuitive argument names. 
+
+```{r longer_wider_data}
+# Create an object wtemp_long and compare to wtemp_gather
+wtemp_long <- pivot_longer(data = wtemp, names_to = "site", values_to = "temperature",
+                           cols = calispell_temp:winchester_temp)
+
+# Create an object wtemp_wide from wtemp_long and compare to wtemp_spread
+wtemp_wide <- pivot_wider(data = wtemp_long, names_from = site, values_from = temperature)
+
+```
+
+Going forward in this demo, we will work with the long format of the data (wtemp_long). If you wanted to clean your workspace and get rid of the objects you don't need anymore, your can run `rm(list = c("wtemp", "wtemp_gathered", "wtemp_spread", "wtemp_wide"))`
+
+Now that the data is in long formate, the names in the column "site" contain unnecessary duplication of "_temp" in the site names. We can use a handy function called `separate()` to split a column by a "delimiter" (usually a symbol like a period, a dash, or an underscore). 
+
+```{r}
+wtemp_long <- separate(data = wtemp_long, col = site, into = c("site", "drop"), sep = "_")
+
+# Note: pivot_longer() actually allows you to separate names within that function. See the documentation to do this in a single step
+
+# The inverse function of separate is unite(). You can also force strings together with paste()
+# I have not run into many applications for unite (though I do use paste for other applications quite often), so I am not including an example here. There is one in your reading though. 
+```
+
+
+# Factors
+
+Factors are an important type of categorical data that allows us to specify the levels/order of the unique values. You can check the data type in a column by looking at the structure of the data frame with `str()` or you can check if an individual column is a factor with `is.factor()`. Note that there are analogous functions for checking if a column contains numeric or character data as well. 
+
+You will want your data to be factors when you are plotting lines, colors, etc. by that variable or faceting on that variable. The facor order defaults to alphabetical order or numeric order (by first digit), but we often want to specify a different order that makes more sense for communicating our results (especially if the data has a natural order, like small, medium and large). 
+
+Now, let's convert our sites to factors. 
+
+```{r}
+# To convert a column to a factor, we can use the function factor() and set the levels
+# We are going to replace the "site" column with the same column, but converted to factors
+wtemp_long$site <- factor(wtemp_long$site)
+
+# We can check the level order with:
+levels(wtemp_long$site)
+
+# Now to change the order, we can add the argument levels = c()
+wtemp_long$site <- factor(wtemp_long$site, levels = c("smalle", "calispell", "winchester"))
+
+# We can check the new level order with:
+levels(wtemp_long$site)
+
+```
+
+One important caution when it comes to factors is that if you convert a factor variable to a numeric variable, it will take on the level value. This can be confusing in some rare instances when R interprets a column as factor data when it looks to you like it should be numeric. If you convert it to numeric data, it will convert it to the factor levels, not the numbers themselves. You can get around this by converting to character data first. To make this clearer, let's look at an example. 
+
+```{r}
+# Create a factor vector with some numbers in it
+x <- factor(c("5", "2", "1", "10", "23"))
+
+# Check the levels of x
+levels(x)
+
+# See what happens if you convert to numeric data
+as.numeric(x)
+
+# We don't have the right numbers. To get around this, we can convert to characters first
+as.numeric(as.character(x))
+
+```
+
+This is a prime example of why you want to be careful about checking your data types and making sure when you convert between types that you are getting back what you think you are getting back. 
+
+```{r}
+# TASK: Now that the data is long and the sites are converted to factors, try again to plot the time series, with a different color for each stream using ggplot. 
+
+
+```
+
+
+# Dates and times
+
+Right now, the dates and times are character data and are in separate columns, so we can't plot the data as a true time series with all time points having one value and points won't necessarily be plotted in the correct order in time. 
+
+There are a few packages that help with working with dates and times. For now, we will use the function `as.POSIXct()` and package `lubridate`. Go ahead and install this package. 
+
+For more information on how to define the date format, see: <https://www.r-bloggers.com/2013/08/date-formats-in-r/>
+
+```{r}
+library(lubridate)
+
+# First, we can use the base R function as.POSIXct() to create a date-time column
+wtemp_long$datetime <- as.POSIXct(paste(wtemp_long$date, wtemp_long$time), format="%m/%d/%y %I:%M:%S %p")
+
+# Now that the column datetime is in a standard date format, we can use functions from the lubridate package to extract date information out. For example:
+
+wtemp_long$month <- month(wtemp_long$datetime)
+wtemp_long$year <- year(wtemp_long$datetime)
+
+```
+
+
+```{r}
+# TASK: Now that the data is long, the sites are converted to factors AND we have formatted date-times are , try again to plot the time series, with a different color for each stream using ggplot. 
+
+
+```
+
+
+# Saving a clean data set
+
+Once you go through the process of tidying and cleaning your raw data, you can save time in the future by starting with the clean data. You always want to keep your untouched raw data on your computer (for reproducibility), but you can write out a copy of your cleaned data with the function `write.csv()`. 
+
+```{r}
+write.csv(wtemp_long, file = "TributaryTemperatures_tidy.csv", row.names = FALSE)
+
+```
+
+
+RETUEN TO SLIDES FOR GROUP EXERCISE AND BREAK
+
+
+# Grouping and summarizing
+
+We will talk more about groups and about creating new variables later, but for now, we will look at creating basic summaries because it will likely be handy for exploring your final project data. 
+
+We will use a two-step process involving two functions: group_by() and summarise(). We will soon make this process a little smoother when we learn about "piping" (which some of you are already familiar with), but for now, we will go step-by-step. In the first step, you will create a data frame that contains the grouping information and in the second step, you will summarize according to the groups. 
+
+Let's produce some summaries of the Palmer penguins data:
+
+```{r grouping}
+# Calculate the average bill length by sex
+
+str(penguins)
+
+# Step 1: Add sex grouping
+penguin_summary <- group_by(penguins, sex)
+
+# Step 2: Summarize average (note that the data is now the summary data frame)
+penguin_summary <- summarise(penguin_summary, ave_bill_length = mean(bill_length_mm))
+
+```
+
+We can also create more than one level of grouping. For example, we can calculate the mean bill length by species by adding two grouping levels. 
+
+```{r grouping_2}
+# Calculate the average bill length by sex and species
+
+# Step 1: Add sex and species grouping
+penguin_summary <- group_by(penguins, sex, species)
+
+# Step 2: Summarize average (note that the data is now the summary data frame)
+penguin_summary <- summarise(penguin_summary, ave_bill_length = mean(bill_length_mm))
+
+```
+
+TASK: Calculate the maximum body mass for each species on each island
+
+TASK: Calculate the median bill depth by island. What happened? Why?
+
+
+# Joining
+
+
+
+
+
