@@ -123,7 +123,7 @@ wtemp_long <- separate(data = wtemp_long, col = site, into = c("site", "drop"), 
 
 Factors are an important type of categorical data that allows us to specify the levels/order of the unique values. You can check the data type in a column by looking at the structure of the data frame with `str()` or you can check if an individual column is a factor with `is.factor()`. Note that there are analogous functions for checking if a column contains numeric or character data as well. 
 
-You will want your data to be factors when you are plotting lines, colors, etc. by that variable or faceting on that variable. The facor order defaults to alphabetical order or numeric order (by first digit), but we often want to specify a different order that makes more sense for communicating our results (especially if the data has a natural order, like small, medium and large). 
+You will want your data to be factors when you are plotting lines, colors, etc. by that variable or faceting on that variable. The factor order defaults to alphabetical order or numeric order (by first digit), but we often want to specify a different order that makes more sense for communicating our results (especially if the data has a natural order, like small, medium and large). 
 
 Now, let's convert our sites to factors. 
 
@@ -251,6 +251,22 @@ TASK: Calculate the median bill depth by island. What happened? Why?
 
 
 # Joining
+
+Joining data tables allows us to relate and visualize data from across multiple data sources. To join data, you must consider what type of join you would like (i.e., which observations you are trying to preserve) and what variable you have in common to join on. Note that you can join on more than one variable (e.g., date and location). 
+
+Within the join functions, the argument "by = " allows you to specify which variables to join on. If you don't specify a variable, it will try to find columns in common, but these may not be the ones you intend, so it is best to be explicit. 
+
+```{r}
+# Manually enter data on sea ice extent (source: https://nsidc.org/cryosphere/sotc/sea_ice.html)
+sea_ice <- data.frame(Year = c(2005:2009), extent_mil_sq_km = c(5.5, 5.86, 4.27, 4.69, 5.26))
+
+# Now merge onto the penguin data. Compare different joins
+
+penguin_ice_left <- left_join(penguins, sea_ice, by = c("year" = "Year"))
+penguin_ice_right <- right_join(penguins, sea_ice, by = c("year" = "Year"))
+penguin_ice_full <- full_join(penguins, sea_ice, by = c("year" = "Year"))
+
+```
 
 
 
