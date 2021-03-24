@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Part 1: Load and tidy data
 
-Load the data file "FishstatJ_ISSCAAP_prod_by_continent.csv" and produce a tidy data set (name it df_tidy). Convert the column with the year data to a date format. Convert the production source data to factor data with Capture production as the first level and Aquaculture production as the second level. [5 points]
+Load the data file "FishstatJ_ISSCAAP_prod_by_continent.csv" and produce a tidy data set (name it df_tidy). Convert the production source data to factor data with Capture production as the first level and Aquaculture production as the second level. [5 points]
 
 ```{r load_tidy_data}
 library(tidyverse)
