@@ -8,3 +8,6 @@
 *.txt
 *.csv
 *.mp4
+*.pdf
+*Key.Rmd
+*Key.R
