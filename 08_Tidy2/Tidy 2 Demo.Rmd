@@ -1,0 +1,339 @@
+---
+title: "Tidy Data Part 2 Demo"
+author: "Jessica Gephart"
+date: "3/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(palmerpenguins)
+library(lubridate)
+```
+
+```{r load_data}
+# We will keep working with the creek temp data 
+
+# Make sure you change this to point to where your data file is
+wtemp <- read.csv("CalispellCreekandTributaryTemperatures.csv", stringsAsFactors = FALSE) 
+
+# Correct the names
+names(wtemp) <- c ("date", "time", "calispell_temp", "smalle_temp", "winchester_temp")
+
+```
+
+
+# OBJECTIVES:
+
+* Improve data cleaning/management process
+* Filter data with logical statements
+* Transform data with logical statements, functions, and iterations
+
+# Data cleaning workflow
+
+## General principles
+
+You will want your code to be readable to any person. As such, it should:
+
+* Be organized in a linear order so that you can run it all at once in order or read through it line by line and get the same output
+* Include regular commenting describing the cleaning and processing steps so that you or anyone else can easily read understand the logic of what the code is trying to do and compare it to what the code is actually doing
+* Use intuitive names for all objects so the reader doesn't have to look back to figure out what a vector or data frame represents
+* Don't create too many different objects (try to keep your environment clean)
+
+## Piping
+
+Use the piping symbol `%>%` to link together multiple steps of processing your data. You can then avoid writing over the same dataset again and again and you don't have to include the "data" argument within each function. You have seen some examples of this in past code and we will use this throughout the rest of the demo. 
+
+```{r}
+# Tidy the data using piping
+wtemp <- wtemp %>%
+  mutate(date = as.POSIXct(paste(date, time), format="%m/%d/%y %I:%M:%S %p")) %>% 
+  pivot_longer(names_to = c("stream", "drop"), values_to = "temp", names_sep = "_", cols = calispell_temp:winchester_temp)
+
+```
+
+## Logical statements
+
+A data type that we have not talked about yet is known as "logical" and it consists of TRUE and FALSE (or 1 and 0, respectively, when logical values are converted to numeric). We don't usually create columns with logical data, but we use them all of the time for subsetting and transforming data (but it is often working behind the scenes). 
+
+The most common ways we use logical statements are:
+
+* `==` meaning exactly equal to
+* `>` greater than, `>=` greater than or equal to, `<` greater than and `<=` less than or equal to
+* `%in%` meaning the value is one of a vector of options
+* `!` meaning "not" and can be used in `!=` for not equal to or preceding an "in" statement for "not in"
+* You can also use the logical tests is.numeric(), is.na(), etc.
+
+If you want to link together multiple logical statements, you can use `|` for "or" or `&` for "and". 
+
+```{r}
+# Create vectors to show different logical arguments
+years_1 <- c(1990:2012)
+years_2 <- c(2005:2021)
+
+months_1 <- c("Jan", "Mar", "Apr", "Aug", "Sep", "Dec")
+months_2 <- c("Mar", "Apr", "May", "Aug", "Jul", "Dec")
+
+# We can test if each value is equal to another value:
+years_1 == 2005
+months_1 == "Mar"
+
+# TASK: Test which years in years_2 are less than or equal to 2009
+
+
+# We can test if all of the values are equal (the vectors have to be equal length or a multiple of the other):
+months_1 == months_2
+years_1 == years_2 # This will give a warning
+
+# We can ask the negative, "not equal" with:
+months_1 != months_2
+
+# Note that the position matters when comparing vectors. If you want to see if any of the values are equal, you can use "%in%":
+years_1 %in% years_2
+years_2 %in% years_1 # Note that order matters here, so you will get something different
+
+# We can test for "not in" with: 
+!(years_1 %in% years_2)
+
+# We often don't want to see the vector of trues and falses, but rather to see the elements corresponding to the trues. To do that, we can select from the vectors with: 
+years_1[years_1 %in% years_2]
+
+# TASK: Identify the months in months_2 that are not in months_1.
+
+
+```
+
+### Logical statements in filtering
+
+We can use logical statements to filter the data. This allows us to keep a subset of observations, which can make the data easier to work with (and faster when you start working with large data sets). Tidyverse has a handy function called filter(), which allows you to filer rows based on logical criteria. 
+
+```{r}
+# Filter to years after 2012
+tmp <- wtemp %>%
+  filter(year(date) > 2012)
+
+# Filter to years after 2012 and sampled in winchester
+tmp <- wtemp %>%
+  filter(year(date) > 2012 & stream == "winchester")
+
+# Filter to years after 2012 or sampled in winchester
+tmp <- wtemp %>%
+  filter(year(date) > 2012 | stream == "winchester")
+
+# TASK: Filter wtemp to remove all na temperature values in wtemp
+
+
+# Replace NAs with 0's
+tmp <- c(1, 2, 5, 6, NA, 3, NA, 7)
+
+tmp[is.na(tmp)] <- 0
+
+```
+
+
+### Logical statements in selecting columns
+
+We often want to only keep particular columns so that we have a smaller data frame to work with. In this case, we now have two unnecessary columns: "time" and "drop".
+
+We can use the select() function to list which columns to keep or which to get rid of. Within the select() function, we can use a `-` to drop a column. 
+
+When you select the columns, the resulting data frame will have the columns in the order you list them in. 
+
+```{r}
+# Drop the "drop" column by listing the columns to keep:
+tmp <- wtemp %>%
+  select(date, time, stream, temp)
+
+# Drop the "drop" column by listing it as a column not to keep:
+tmp <- wtemp %>%
+  select(-drop)
+
+# You can also keep a range of columns, using ":"
+# For example, keep columns stream to temp: 
+tmp <- wtemp %>%
+  select(stream:temp)
+
+# There are several helper functions, described on the cheat sheet, for selecting columns based on conditions.
+
+# TASK: Update write over wtemp and get rid of the "time" and "drop" columns
+
+
+```
+
+
+# Transforming data
+
+Recall that a key advantage of having our data in tidy format is that we can perform calculations across variables on each observation. The main function for doing this is mutate(). The arguments of mutate are the data (or not if you are using it within a piping sequence) and then the column you want the result in (you can write over an existing column), followed by =, and then the result you want in the column. You can include multiple mutations in a single function. 
+
+```{r}
+# Since the temperatures are currently in C, let's change them to F with mutate()
+wtemp <- wtemp %>%
+  mutate(temp_F = temp*(9/5) + 32)
+
+# Now that we have two columns, we can also see how to use two columns in mutate:
+wtemp <- wtemp %>%
+  mutate(temp_ratio = temp/temp_F, 
+         temp_diff = temp-temp_F)
+
+# We can also combine mutate with other steps, for example, to calculate the monthly mean by stream and use that to calculate the seasonally-detrended temp:
+
+wtemp <- wtemp %>%
+  # Add month column
+  mutate(month = month(date)) %>%
+  # Group by month and stream
+  group_by(month, stream) %>%
+  # Calculate the monthly average temp
+  mutate(month_ave = mean(temp)) %>% 
+  # Calculate the seasonally-detrended temp
+  mutate(temp_detrend = temp - month_ave)
+
+```
+
+It is often useful to create groupings of character or factor data in new columns (e.g., assign countries to regions) or to add a categorical variable based on a numeric value (e.g., concentrations of compounds being at safe or unsafe levels). We can use case_when() to create these groupings (ifelse() also works, but we will just look at case_when() here). 
+
+```{r}
+# Say we want to group the months into seasons:
+wtemp <- wtemp %>%
+  mutate(season = case_when(
+    month %in% c(1, 2, 12) ~ "winter",
+    month %in% c(3, 4, 5) ~ "spring",
+    month %in% c(6, 7, 8) ~ "summer",
+    month %in% c(9, 10, 11) ~ "fall"
+  ))
+
+# TASK: Create a variable with a categorical designation for if the water is below freezing or above freezing. 
+
+# TASK: How many observations are below freezing?
+
+
+```
+
+
+# Break out exercise: Working with the Palmer Penguins data set, filter the data to one island and species. Then, create a plot of the bill length to bill depth ratio versus the body mass, with different point colors for each sex. 
+
+```{r}
+# Break out exercise code
+
+
+```
+
+
+## Iterations
+
+We often want to perform the same analysis or visualization steps on the different subsets of data (e.g., perform a calculation, create a table, or produce a figure for each country or year). Code is great for repeating the same steps many times and a loop can allow you to repeat coded steps without copying and pasting the code again and again (which can be error-prone and tedious to update if you decide to change something). 
+
+A "for loop" is a basic way to iterate through a set of values and perform the same steps each time. 
+
+```{r}
+# The most basic for loop:
+for(i in 1:10){
+  print(i)
+}
+
+# We can also save a value on each loop:
+for(i in 1:10){
+  x <- i
+  print(x)
+}
+
+# And we can do any math or other operations within the loop
+for(i in 1:10){
+  x <- 5 + 2*i
+  print(x)
+}
+
+# The value x is updated on each loop, so we can also use this to make x build on itself:
+x2 <- 1 # We have to give it an initial x2 to start the loop with
+for(i in 1:10){
+  x2 <- x2 + x2
+  print(x2)
+}
+
+# We can work with data frames in a loop and iterate through the rows:
+# (Note: this is usually less efficient than using mutate/applying a function)
+wtemp$temp_K <- NA # Initialize a column with just NAs
+for(i in 1:100){
+  wtemp$temp_K[i] <- wtemp$temp[i] + 273.15
+}
+# TIP: If you wanted to do this for all rows, you can do 1:nrow(wtemp)
+
+# We can also produce figures/tables in loops. In this case, we are going to loop through the seasons, so we first need to create an object that holds the season names for us to iterate through them
+
+seasons <- unique(wtemp$season)
+for(i in 1:length(seasons)){
+  tmp <- wtemp %>%
+    filter(season == seasons[i])
+  
+  g <- ggplot(tmp, aes(x = stream, y = temp)) +
+    geom_boxplot() + 
+    labs(title = paste(seasons[i]))
+  
+  print(g)
+}
+
+# TASK: Loop through the streams and produce a plot of the time series of temperature
+
+
+
+```
+
+If you get stuck creating a loop, it is often helpful to "step into" the loop by setting i manually and then running each line within the loop individually to see where it is getting stuck. 
+
+## Functions
+
+Another way to repeat a task many times is by creating your own function. Writing your own functions is a very powerful tool that can allow you to perform custom calculations or build functions that do things like produce custom plots. The basic structure of a function is:
+1. Give it a name (the same way you name any object, though best practice is to name that starts with a verb to describe what it does)
+2. After the assignment arrow, type function()
+3. Inside the function, name the arguments. You can set a default value for arguments by using equals (e.g., height = 2 if height is an argument you want to include and you want the default value to be 2)
+4. After function(arguments...), open a curly bracket
+5. Type out all of the steps, line by line, that you want the function to carry out
+6. Specify what you would like the function to return by having the last line be return() with whatever the function should return inside
+7. End with a close curly bracket
+
+Note: It is best not to name an argument the same thing as your input (e.g., year = year) or you might end up creating confusion
+
+```{r}
+# Let's create a function to convert to Kelvin instead:
+convert_C_to_K <- function(x){
+  x_k <- x + 273.15
+  
+  return(x_k)
+}
+
+# Now we can use this function within mutate()
+wtemp <- wtemp %>% 
+  mutate(temp_K = convert_C_to_K(temp))
+
+# We can also create functions to produce plots:
+plot_season <- function(plot_season = "spring"){
+    tmp <- wtemp %>%
+    filter(season == plot_season)
+  
+  g <- ggplot(tmp, aes(x = stream, y = temp)) +
+    geom_boxplot() + 
+    labs(title = paste(plot_season))
+  
+  return(g)
+}
+
+plot_season()
+
+plot_season(plot_season = "summer")
+
+# TASK: Create a function to produce a plot of the time series of temperature for a given stream
+
+```
+
+If you get stuck creating a function, it is often helpful to "step into" the function by saving each argument manually and then running each line within the function individually to see where it is getting stuck. 
+
+
+# Break out exercise: Working with the Palmer Penguins data set, write a function to produce a figure of your choice for a user-specified species and island. 
+
+```{r}
+# Break out exercise code
+
+
+```
+
+

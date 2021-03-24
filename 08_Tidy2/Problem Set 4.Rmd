@@ -1,0 +1,104 @@
+---
+title: "Problem Set 4"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part 0: Run the code chunks in this section to get started
+
+```{r load_packages}
+library(tidyverse)
+library(lubridate)
+library(knitr)
+```
+
+
+```{r load_tidy_data}
+# We will be working with the same data from the last problem set
+# You may have to change the file path to the data, but this code chunk should run otherwise
+
+df <- read.csv("FishstatJ_ISSCAAP_prod_by_continent.csv")
+
+df_tidy <- df %>% 
+  pivot_longer(cols = Year_1950:Year_2018, names_to = c("drop", "year"), names_sep = "_", values_to = "tonnes", values_drop_na = TRUE) %>%
+  mutate(date = as.POSIXct(year, format = "%Y"),
+         year = year(date), 
+         Production_source = factor(Production_source, levels = c("Capture production", "Aquaculture production"))) %>% 
+  select(-c("date", "drop")) %>% 
+  mutate(Production_source = case_when(
+    Production_source == "Capture production" ~ "Capture",
+    Production_source == "Aquaculture production" ~ "Aquaculture"
+  ))
+
+```
+
+
+# Part 1: Percent of production by source 
+
+## Part 1a: Calculate the percent of production by source in 2018 globally using group_by() (Hint: it may be helpful to create a separate value that represents total global production) [2 points]
+
+```{r}
+
+
+```
+
+
+## Part 1b: Calculate the percent of production by source in 2018 (Hint: you can do this in a few ways, but it might be easiest to summarise total production by source for each continent and then pivot_wider on production source and use mutate) [3 points]
+
+```{r}
+
+
+```
+
+## Part 1c: Select one region and calculate the percent of production from aquaculture in each year and plot it as a time series (make the theme and axes labels look nice) [5 points]
+
+```{r}
+
+
+```
+
+
+# Part 2: Production by species group
+
+## Part 2a: Calculate the percent of each ISSCAAP group's production from each production source in 2018 (Note: use "values_fill = 0" in pivot_wider to insert zeros in place of NAs) [2 points]
+
+```{r}
+
+
+```
+
+
+## Part 2b: Create a horizontal stacked bar chart for the percent of production by source in 2018 with ISSCAAP group on the y-axis (Hint: add the layer coord_flip() to make the plot horizontal) [2 points]
+
+```{r}
+
+
+```
+
+## Part 2c: Write a loop to produce the plot above for the years 1950, 1975, 2000, and 2018. [3 points]
+
+```{r}
+# Create a vector of the years to loop through
+
+
+# Create a data frame with the percent of production by source for each year
+
+
+# Write a loop that indexes from 1 to the length of your vector of years
+# Hint: assign the plot to something called "g" (or whatever you would like) and add print(g) to your loop to see the result when you run this code chunk
+
+
+
+```
+
+## Part 2c: Write a function that will create the plot above for any year (i.e., the function takes the year as an argument) and demonstrate that it works by using it to produce the plot above for 3 years of your choice (hint: you should be able to leverage a lot of your code from the loop for this, like the example in class). [3 points]
+
+```{r}
+
+
+```
+
+

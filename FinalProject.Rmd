@@ -118,25 +118,24 @@ __4. Hypotheses/questions__
 - List these clearly and in a logical order  
 - Make hypotheses directionally using predictions (e.g. "I predict N will reduce plant diversity" rather than "I predict N will change plant diversity")
    
-   
 ### II. Approach/Methods
 - Provide a description of the data sources, including who collected the data and how it was collected  
 - Describe how you will use the data to address your questions  
 - Include R chunks with data import, data tidying, and any important preliminary visualizations (for the "cleaned up" version these will be in non-exported R code chunks; they should be shown in the "all work shown" version)
-
 
 ### III. Results
 - Report the key findings (but save the interpretation and contextualization for the discussion)  
 - Provide evidence to answer all questions or hypotheses posed in the introduction  
 - Include R chunks that contain data summaries and visualizations  
 - Have these chunks export captioned, publication-worthy figures 
+- This section should include 3-5 publication-worthy figures (1 background or conceptual figure may be included in an earlier section though)
 
 ### IV. Discussion
 The discussion will be around 3-5 well-cited paragraphs that do the following:
 
 1. Provide a big overview or summary of consequences of strongest results (1 paragraph)    
 2. Expand thoughts on results and hypothesis (2-4 paragraphs)  
-3. Discuss the limitations of the approach a/o potential future directions (1 paragraph)   
+3. Discuss  potential future directions (1 paragraph)   
 4. Summarize the conclusion or take home message (1-2 paragraphs)    
 
 #### Goals for this section include:
@@ -148,7 +147,7 @@ The discussion will be around 3-5 well-cited paragraphs that do the following:
 * The comprehensive literature review should be in the introduction, here it is necessary to link to past work but no need to introduce too many new citations
 
 ### V. Literature cited
-Please follow MLA citation guidelines. This will include in-text, parenthetical citations and a literature cited section at the end. Aim for at least 10 peer-reviewed cited works.  
+You may use a reference style of your choice, but you must be consistent. This will include in-text, parenthetical citations and a literature cited section at the end. Aim for at least 10 peer-reviewed cited works.  
 
 **This is a nice reference on scientific writing:** Turbek, Sheela P., Taylor M. Chock, Kyle Donahue, Caroline A. Havrilla, Angela M. Oliverio, Stephanie K. Polutchko, Lauren G. Shoemaker, and Lara Vimercati. “Scientific Writing Made Easy: A Step-by-Step Guide to Undergraduate Writing in the Biological Sciences.” The Bulletin of the Ecological Society of America 97, no. 4 (October 2016): 417–26. https://doi.org/10.1002/bes2.1258.
 

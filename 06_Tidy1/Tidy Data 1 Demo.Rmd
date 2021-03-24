@@ -22,7 +22,7 @@ The author of tidyr, Hadley Wickham, discusses the philosophy of tidy data in hi
 Tidy data are data that are easy to transform and visualize. The key idea is that variables are stored in a consistent way, with three features:
 
 1. Each variable forms a column
-2.  Each observation forms a row
+2. Each observation forms a row
 3. Each type of observational unit forms a table
 
 Meanwhile, there are five common problems associated with messy data:
@@ -35,7 +35,7 @@ Meanwhile, there are five common problems associated with messy data:
 
 # Load the data
 
-We will use a dataset of water temperature in Calispell Creek and its tributories  from eastern Washington State. These type of data are perfect for for scripted analysis because their formats remain constant but graphs frequently need to be updated to reflect new data.
+We will use a dataset of water temperature in Calispell Creek and its tributaries  from eastern Washington State. These type of data are perfect for for scripted analysis because their formats remain constant but graphs frequently need to be updated to reflect new data.
 
 ```{r load_data}
 # Don't forget to point to where your data is (as a relative path from where your R Markdown file is located)
@@ -79,7 +79,7 @@ Note that the gather() call takes the following arguments, in order:
 wtemp_gathered <- gather(data = wtemp, key= site, value = temperature, 
                          calispell_temp:winchester_temp) 
 # Check out the structure of the new dataframe
-
+str(wtemp_gathered)
 ```
 
 We will generally want our data in long format for analysis. There can be instances where the data is too long, such that the data isn't tidy or we want a wide format (e.g., to produce a summary table). In these cases, we can use the spread() function. 
@@ -88,6 +88,7 @@ Let's take a look at the help documentation and compare to the gather() argument
 
 ```{r spread_data}
 # Create a new object called wtemp_spread
+wtemp_spread <- spread(wtemp_gathered, key = site, value = temperature)
 
 ```
 
@@ -107,7 +108,7 @@ wtemp_wide <- pivot_wider(data = wtemp_long, names_from = site, values_from = te
 
 Going forward in this demo, we will work with the long format of the data (wtemp_long). If you wanted to clean your workspace and get rid of the objects you don't need anymore, your can run `rm(list = c("wtemp", "wtemp_gathered", "wtemp_spread", "wtemp_wide"))`
 
-Now that the data is in long formate, the names in the column "site" contain unnecessary duplication of "_temp" in the site names. We can use a handy function called `separate()` to split a column by a "delimiter" (usually a symbol like a period, a dash, or an underscore). 
+Now that the data is in long format, the names in the column "site" contain unnecessary duplication of "_temp" in the site names. We can use a handy function called `separate()` to split a column by a "delimiter" (usually a symbol like a period, a dash, or an underscore). 
 
 ```{r}
 wtemp_long <- separate(data = wtemp_long, col = site, into = c("site", "drop"), sep = "_")
@@ -192,7 +193,7 @@ wtemp_long$year <- year(wtemp_long$datetime)
 
 
 ```{r}
-# TASK: Now that the data is long, the sites are converted to factors AND we have formatted date-times are , try again to plot the time series, with a different color for each stream using ggplot. 
+# TASK: Now that the data is long, the sites are converted to factors AND we have formatted date-times, try again to plot the time series, with a different color for each stream using ggplot. 
 
 
 ```
