@@ -20,6 +20,7 @@ library(ggsn) # for adding north arrows and scale bar
 library(rnaturalearth)
 # library(rnaturalearthdata) # supporting data, only install/load if prompted 
 library(gtrendsR) # get google search data
+library(rgeos)
 
 ```
 
